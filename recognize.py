@@ -11,6 +11,7 @@ import imutils
 import pickle
 import cv2
 import os
+from align_faces import align
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -49,10 +50,13 @@ image = cv2.imread(args["image"])
 image = imutils.resize(image, width=600)
 (h, w) = image.shape[:2]
 
+faceAligned = align('shape_predictor_68_face_landmarks.dat', args["image"])
+
+if faceAligned is None:
+	faceAligned = image
+
 # construct a blob from the image
-imageBlob = cv2.dnn.blobFromImage(
-	cv2.resize(image, (300, 300)), 1.0, (300, 300),
-	(104.0, 177.0, 123.0), swapRB=False, crop=False)
+imageBlob = cv2.dnn.blobFromImage(faceAligned)
 
 # apply OpenCV's deep learning-based face detector to localize
 # faces in the input image
