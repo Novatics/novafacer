@@ -77,7 +77,7 @@ for i in range(0, detections.shape[2]):
 		(startX, startY, endX, endY) = box.astype("int")
 
 		# extract the face ROI
-		face = image[startY:endY, startX:endX]
+		face = faceAligned[startY:endY, startX:endX]
 		(fH, fW) = face.shape[:2]
 
 		# ensure the face width and height are sufficiently large
@@ -102,11 +102,11 @@ for i in range(0, detections.shape[2]):
 		# probability
 		text = "{}: {:.2f}%".format(name, proba * 100)
 		y = startY - 10 if startY - 10 > 10 else startY + 10
-		cv2.rectangle(image, (startX, startY), (endX, endY),
+		cv2.rectangle(faceAligned, (startX, startY), (endX, endY),
 			(0, 0, 255), 2)
-		cv2.putText(image, text, (startX, y),
+		cv2.putText(faceAligned, text, (startX, y),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
 
 # show the output image
-cv2.imshow("Image", image)
+cv2.imshow("Image", faceAligned)
 cv2.waitKey(0)

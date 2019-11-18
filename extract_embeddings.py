@@ -15,10 +15,10 @@ from align_faces import align
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--dataset", required=True,
-	help="path to input directory of faces + images")
 ap.add_argument("-e", "--embeddings", required=True,
 	help="path to output serialized db of facial embeddings")
+ap.add_argument("-i", "--dataset", required=True,
+	help="path to input directory of faces + images")
 ap.add_argument("-d", "--detector", required=True,
 	help="path to OpenCV's deep learning face detector")
 ap.add_argument("-m", "--embedding-model", required=True,
