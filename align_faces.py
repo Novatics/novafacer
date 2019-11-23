@@ -10,9 +10,10 @@ import cv2
 import openface
 from utils import extract_left_eye_center, extract_right_eye_center, get_rotation_matrix, crop_image
 
-def align(shape_predictor, imagePath):
+def align(detected_face_rect, imagePath):
   # initialize dlib's face detector (HOG-based) and then create
   # the facial landmark predictor
+  shape_predictor = 'shape_predictor_68_face_landmarks.dat'
   detector = dlib.get_frontal_face_detector()
   predictor = dlib.shape_predictor(shape_predictor)
   fa = FaceAligner(predictor, desiredFaceWidth=256)
@@ -26,15 +27,15 @@ def align(shape_predictor, imagePath):
   
 
   # detect faces in the grayscale image
-  rects = detector(gray, 1)
+  # rects = detected_face_rect
 
   # loop over the face detections
-  for (i, rect) in enumerate(rects):
+  # for (i, rect) in enumerate(rects):
     # extract the ROI of the *original* face, then align the face
     # using facial landmarks
     
-    (x, y, w, h) = rect_to_bb(rect)
-    faceAligned = fa.align(image, gray, rect)
+  (x, y, w, h) = rect_to_bb(detected_face_rect)
+  faceAligned = fa.align(image, gray, detected_face_rect)
 
     #pose_landmarks = predictor(gray, rect)
     #faceAligned = face_aligner.align(534, gray, rect, landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
@@ -48,14 +49,14 @@ def align(shape_predictor, imagePath):
     #faceAligned = crop_image(rotated, rect)
 
 
-    return faceAligned
+  return faceAligned
 
 
-ap = argparse.ArgumentParser()
+""" ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--dataset", required=True,
 	help="path to input directory of faces + images")
 args = vars(ap.parse_args())
 
 faceAligned = align('shape_predictor_68_face_landmarks.dat', args["dataset"])
 cv2.imshow("Aligned", faceAligned)
-cv2.waitKey(0)
+cv2.waitKey(0) """
