@@ -6,11 +6,10 @@ LEFT_EYE_INDICES = [36, 37, 38, 39, 40, 41]
 RIGHT_EYE_INDICES = [42, 43, 44, 45, 46, 47]
 
 def rect_to_tuple(rect):
-    left = rect.left()
-    right = rect.right()
-    top = rect.top()
-    bottom = rect.bottom()
-    return left, top, right, bottom
+  return rect.top(), rect.right(), rect.bottom(), rect.left()
+
+def trim_shape(css, image_shape):
+  return max(css[0], 0), min(css[1], image_shape[1]), min(css[2], image_shape[0]), max(css[3], 0)
 
 def extract_eye(shape, eye_indices):
     points = map(lambda i: shape.part(i), eye_indices)
