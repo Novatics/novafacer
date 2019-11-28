@@ -33,4 +33,5 @@ for i in range(no):
   cv2.rectangle(test_image, (left, bottom), (right, top), (0, 0, 255), 2)
 
 pil_image = Image.fromarray(test_image)
+pil_image.resize((100,100))
 pil_image.show()

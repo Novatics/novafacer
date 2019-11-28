@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import dlib
 
 
 LEFT_EYE_INDICES = [36, 37, 38, 39, 40, 41]
@@ -11,9 +12,12 @@ def rect_to_tuple(rect):
 def trim_shape(css, image_shape):
   return max(css[0], 0), min(css[1], image_shape[1]), min(css[2], image_shape[0]), max(css[3], 0)
 
+def tuple_to_rect(tuple):
+  return dlib.rectangle(tuple[3], tuple[0], tuple[1], tuple[2])
+
 def extract_eye(shape, eye_indices):
-    points = map(lambda i: shape.part(i), eye_indices)
-    return list(points)
+  points = map(lambda i: shape.part(i), eye_indices)
+  return list(points)
 
 def extract_eye_center(shape, eye_indices):
     points = extract_eye(shape, eye_indices)
