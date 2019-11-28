@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import cv2
 from PIL import Image
-from identify_faces import identify, load_image_file, identify_face
+from identify_faces import load_image_file, identify_face
 from extract_embeddings import extract_with_dlib
 
 ap = argparse.ArgumentParser()
