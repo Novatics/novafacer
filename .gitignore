@@ -105,3 +105,12 @@ venv.bak/
 
 #output models
 output/
+
+#dataset
+dataset/
+
+#images
+images/
+
+#vscode files
+.vscode/
