@@ -19,11 +19,12 @@ def get_greetings_text(name):
     return "Boa tarde {}!".format(name)
   return "Boa noite {}!".format(name)
 
-def use_image(image_path):
-  test_image = load_image_file(image_path)
+def load_recognizer():
   recognizer = pickle.loads(open('output/recognizer.pickle', "rb").read())
   le = pickle.loads(open('output/le.pickle', "rb").read())
+  return (recognizer, le)
 
+def run_recognition(test_image, recognizer, le, show_greetings=False):
   face_locations = identify_face(test_image)
   no = len(face_locations)
 
@@ -35,18 +36,26 @@ def use_image(image_path):
     proba = class_probabilities[0][j]
     name = le.classes_[j]
     top, right, bottom, left = face_locations[i]
-    text = "{}: {:.2f}%".format(name, proba * 100)
     y = bottom - 10 if bottom - 10 > 10 else bottom + 10
+    text = "{}: {:.2f}%".format(name, proba * 100)
     cv2.putText(test_image, text, (left, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
     cv2.rectangle(test_image, (left, bottom), (right, top), (0, 0, 255), 2)
+    if show_greetings:
+      greetings = get_greetings_text(name.capitalize())
+      cv2.putText(test_image, greetings, (10, (i + 1) * 35), cv2.FONT_HERSHEY_SIMPLEX, 1.20, (0, 0, 255), 2)
+
+def use_image(image_path):
+  test_image = load_image_file(image_path)
+  recognizer, le = load_recognizer()
+
+  run_recognition(test_image, recognizer, le)
 
   pil_image = Image.fromarray(test_image)
   pil_image.resize((100,100))
   pil_image.show()
 
 def use_video():
-  recognizer = pickle.loads(open('output/recognizer.pickle', "rb").read())
-  le = pickle.loads(open('output/le.pickle', "rb").read())
+  recognizer, le = load_recognizer()
 
   print("[INFO] starting video stream...")
   vs = VideoStream(src=0).start()
@@ -60,26 +69,7 @@ def use_video():
     frame = imutils.resize(frame, width=600)
     (h, w) = frame.shape[:2]
 
-    recognizer = pickle.loads(open('output/recognizer.pickle', "rb").read())
-    le = pickle.loads(open('output/le.pickle', "rb").read())
-
-    face_locations = identify_face(frame)
-    no = len(face_locations)
-
-    test_image_encodings = extract_with_dlib(frame, face_locations)
-    for i in range(no):
-      test_image_encoding = test_image_encodings[i]
-      class_probabilities = recognizer.predict_proba([test_image_encoding])
-      j = np.argmax(class_probabilities[0])
-      proba = class_probabilities[0][j]
-      name = le.classes_[j]
-      top, right, bottom, left = face_locations[i]
-      text = "{}: {:.2f}%".format(name, proba * 100)
-      greetings = get_greetings_text(name.capitalize())
-      y = bottom - 10 if bottom - 10 > 10 else bottom + 10
-      cv2.putText(frame, greetings, (10, (i + 1) * 35), cv2.FONT_HERSHEY_SIMPLEX, 1.20, (0, 0, 255), 2)
-      cv2.putText(frame, text, (left, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
-      cv2.rectangle(frame, (left, bottom), (right, top), (0, 0, 255), 2)
+    run_recognition(frame, recognizer, le, true)
 
     fps.update()
 
@@ -97,6 +87,7 @@ def use_video():
 
   cv2.destroyAllWindows()
   vs.stop()
+
 
 #######################################################################
 #############################   Main   ################################
