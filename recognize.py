@@ -69,7 +69,7 @@ def use_video():
     frame = imutils.resize(frame, width=600)
     (h, w) = frame.shape[:2]
 
-    run_recognition(frame, recognizer, le, true)
+    run_recognition(frame, recognizer, le, True)
 
     fps.update()
 
