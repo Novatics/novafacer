@@ -107,3 +107,11 @@ venv.bak/
 output/
 
 images/
+#dataset
+dataset/
+
+#images
+images/
+
+#vscode files
+.vscode/
